@@ -8,7 +8,7 @@ courseRouter.post("/purchase", (req, res) => {
   });
 });
 courseRouter.get("/", (req, res) => {
-  res.json({ message: "these are all the courses" });
+  res.json({ message: "success", courses: [] });
 });
 
 module.exports = {
