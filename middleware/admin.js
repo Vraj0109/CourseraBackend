@@ -5,7 +5,7 @@ const adminMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
   try {
     const decodedData = jwt.verify(token, ADMIN_JWT_SECREATE);
-    req.headers.userid = decodedData.id;
+    req.headers.adminid = decodedData.adminId;
     next();
   } catch (error) {
     res.status(401).json({

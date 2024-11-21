@@ -5,7 +5,7 @@ const userMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
   try {
     const decodedData = jwt.verify(token, USER_JWT_SECREATE);
-    req.headers.userid = decodedData.id;
+    req.headers.userid = decodedData.userId;
     next();
   } catch (error) {
     res.status(401).json({

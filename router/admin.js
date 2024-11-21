@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UserModel, AdminModel } = require("../db");
 const { z } = require("zod");
+const { adminMiddleware } = require("../middleware/admin");
 
 const ADMIN_JWT_SECREATE = process.env.ADMIN_JWT_SECREATE;
 const adminRouter = Router();
@@ -68,7 +69,7 @@ adminRouter.post("/login", async (req, res) => {
     if (isCorrectPassword) {
       const token = jwt.sign(
         {
-          userId: user._id,
+          adminId: user._id,
         },
         ADMIN_JWT_SECREATE
       );
@@ -80,6 +81,18 @@ adminRouter.post("/login", async (req, res) => {
     }
   } catch (error) {
     res.status(404).json({ error });
+  }
+});
+
+adminRouter.post("/course", adminMiddleware, async (req, res) => {
+  const { adminid } = req.headers;
+  try {
+    const admin = await AdminModel.find({
+      _id: adminid,
+    });
+    res.status(200).json({ admin });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 });
 

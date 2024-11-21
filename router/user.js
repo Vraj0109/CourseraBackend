@@ -84,8 +84,14 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-userRouter.get("/purchases", userMiddleware, (req, res) => {
-  res.json({ courses: [1, 2] });
+userRouter.get("/purchases", userMiddleware, async (req, res) => {
+  const { userid } = req.headers;
+  try {
+    const user = await UserModel.findOne({ _id: userid });
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
   // res.json({ message: "this" });
 });
 
