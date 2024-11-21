@@ -6,12 +6,14 @@ const jwt = require("jsonwebtoken");
 const { UserModel } = require("./db");
 const { userRouter } = require("./router/user");
 const { courseRouter } = require("./router/course");
+const { adminRouter } = require("./router/admin");
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/user", userRouter);
+app.use("/admin", adminRouter);
 
 app.use("/course", courseRouter);
 

@@ -1,13 +1,13 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { UserModel } = require("../db");
+const { UserModel, AdminModel } = require("../db");
 const { z } = require("zod");
 
-const USER_JWT_SECREATE = process.env.USER_JWT_SECREATE;
-const userRouter = Router();
+const ADMIN_JWT_SECREATE = process.env.ADMIN_JWT_SECREATE;
+const adminRouter = Router();
 
-userRouter.post("/signup", async (req, res) => {
+adminRouter.post("/signup", async (req, res) => {
   const requiredBody = z.object({
     email: z.string().min(5).email(),
     firstName: z.string().min(2),
@@ -28,7 +28,7 @@ userRouter.post("/signup", async (req, res) => {
   const hash = await bcrypt.hash(password, 5);
 
   try {
-    await UserModel.create({
+    await AdminModel.create({
       email: email,
       password: hash,
       firstName: firstName,
@@ -40,7 +40,7 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
-userRouter.post("/login", async (req, res) => {
+adminRouter.post("/login", async (req, res) => {
   const requiredBody = z.object({
     email: z.string().min(5).email(),
     password: z.string().min(8).toUpperCase().toLowerCase(),
@@ -57,7 +57,7 @@ userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.findOne({
+    const user = await AdminModel.findOne({
       email: email,
     });
     if (!user) {
@@ -70,7 +70,7 @@ userRouter.post("/login", async (req, res) => {
         {
           userId: user._id,
         },
-        USER_JWT_SECREATE
+        ADMIN_JWT_SECREATE
       );
       res.status(200).json({
         token: token,
@@ -83,10 +83,6 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-userRouter.get("/purchases", (req, res) => {
-  // res.json({ message: "this" });
-});
-
 module.exports = {
-  userRouter: userRouter,
+  adminRouter,
 };
