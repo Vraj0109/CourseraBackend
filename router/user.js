@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UserModel } = require("../db");
 const { z } = require("zod");
+const { userMiddleware } = require("../middleware/user");
 
 const USER_JWT_SECREATE = process.env.USER_JWT_SECREATE;
 const userRouter = Router();
@@ -83,7 +84,8 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-userRouter.get("/purchases", (req, res) => {
+userRouter.get("/purchases", userMiddleware, (req, res) => {
+  res.json({ courses: [1, 2] });
   // res.json({ message: "this" });
 });
 
