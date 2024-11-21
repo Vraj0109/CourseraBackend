@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { UserModel, AdminModel } = require("../db");
+const { UserModel, AdminModel, CourseModel } = require("../db");
 const { z } = require("zod");
 const { adminMiddleware } = require("../middleware/admin");
 
@@ -85,12 +85,17 @@ adminRouter.post("/login", async (req, res) => {
 });
 
 adminRouter.post("/course", adminMiddleware, async (req, res) => {
+  const { title, description, imageUrl, price } = req.body;
   const { adminid } = req.headers;
   try {
-    const admin = await AdminModel.find({
-      _id: adminid,
+    const course = await CourseModel.create({
+      title,
+      description,
+      imageUrl,
+      price,
+      createrId: adminid,
     });
-    res.status(200).json({ admin });
+    res.status(200).json({ message: "course created", courseId: course._id });
   } catch (error) {
     res.status(500).json({ error });
   }
